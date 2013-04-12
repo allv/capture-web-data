@@ -74,7 +74,7 @@ public class MyFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Aptamil");
-        setResizable(false);
+        setResizable(true);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("爱他美奶粉监听程序");
@@ -273,6 +273,7 @@ public class MyFrame extends javax.swing.JFrame {
 		t.setUser(this.tfUserName.getText());
 		t.setPwd(new String(this.jPasswordField1.getPassword()));
 		t.setTo(this.tfReceipient.getText());
+		t.setConsole(jTextArea1);
 		jTextArea1.append("开始监控了!有货就会发信息到你邮箱,请不要关闭程序......");
 		t.start();
 	}

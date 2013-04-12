@@ -9,18 +9,15 @@ import org.jsoup.select.Elements;
 
 public class CheckMilk {
 
-	private Document openURL(String destUrl) {
+	private Document openURL(String destUrl) throws IOException {
 		try {
 			return Jsoup.connect(destUrl).timeout(100000).get();
 		} catch (IOException e) {
-			System.err
-					.println("Invalid URL Address, can't get data from the url. "
-							+ e.toString());
+			throw e;
 		}
-		return null;
 	}
 
-	public boolean checkAptamilMilk(String destUrl, String name) {
+	public boolean checkAptamilMilk(String destUrl, String name) throws IOException {
 		Document doc = openURL(destUrl);
 		if (doc == null)
 			return false;
