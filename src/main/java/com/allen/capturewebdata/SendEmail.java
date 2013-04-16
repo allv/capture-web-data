@@ -53,6 +53,10 @@ public class SendEmail {
 	}
 
 	public SendEmail() {
+		loadProperties();
+	}
+
+	private void loadProperties() {
 		prop = new Properties();
 		try {
 			prop.load(this.getClass().getResourceAsStream(
@@ -67,6 +71,7 @@ public class SendEmail {
 		this.user = user;
 		this.pwd = pwd;
 		this.to = to;
+		loadProperties();
 	}
 
 	/**
@@ -101,7 +106,7 @@ public class SendEmail {
 			throws MessagingException {
 		MimeMessage msg = new MimeMessage(session);
 		msg.setFrom(new InternetAddress(to));
-		msg.setRecipients(Message.RecipientType.TO, prop.getProperty("mail.to"));
+		msg.setRecipients(Message.RecipientType.TO, this.to);
 		msg.setSubject("爱他美有货了,快去买吧!");
 		msg.setSentDate(new Date());
 		msg.setText("此信件来自吕军的奶粉侦查机器人,请勿回复!");
@@ -109,12 +114,4 @@ public class SendEmail {
 		return msg;
 	}
 
-	public static void main(String[] args) {
-		SendEmail test = new SendEmail();
-		try {
-			test.sendMail();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

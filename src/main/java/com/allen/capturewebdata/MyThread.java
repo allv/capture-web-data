@@ -11,6 +11,51 @@ class MyThread extends Thread {
 	private String to;
 	private String smtpServer;
 	private JTextArea console;
+	private String proxyIP;
+	private String proxyPort;
+	private String proxyName;
+	private String proxyPass;
+	private String goods;
+
+	public String getGoods() {
+		return goods;
+	}
+
+	public void setGoods(String goods) {
+		this.goods = goods;
+	}
+
+	public String getProxyIP() {
+		return proxyIP;
+	}
+
+	public void setProxyIP(String proxyIP) {
+		this.proxyIP = proxyIP;
+	}
+
+	public String getProxyPort() {
+		return proxyPort;
+	}
+
+	public void setProxyPort(String proxyPort) {
+		this.proxyPort = proxyPort;
+	}
+
+	public String getProxyName() {
+		return proxyName;
+	}
+
+	public void setProxyName(String proxyName) {
+		this.proxyName = proxyName;
+	}
+
+	public String getProxyPass() {
+		return proxyPass;
+	}
+
+	public void setProxyPass(String proxyPass) {
+		this.proxyPass = proxyPass;
+	}
 
 	public String getUser() {
 		return user;
@@ -47,18 +92,34 @@ class MyThread extends Thread {
 	@Override
 	public void run() {
 		CheckMilk checkMilk = new CheckMilk();
+		checkMilk.setProxyIP(proxyIP);
+		if(proxyPort != null && !proxyPort.trim().equals("")) {
+			int port = 80;
+			try {
+				port = Integer.parseInt(proxyPort);
+			}catch(NumberFormatException e) {
+				writeMessageToConsle("端口号必须为数字!");
+			}
+			checkMilk.setProxyPort(port);
+		}
+		checkMilk.setProxyName(proxyName);
+		checkMilk.setProxyPass(proxyPass);
 		String url = "http://www.windeln.de/aptamil-milchnahrung.html?ids=63763I63765I63780I13992I13987I63767I63766I63762";
 		while (true) {
 			writeMessageToConsle("抓取数据中......");
 			try {
-				boolean flag = checkMilk.checkAptamilMilk(url,
-						"Kinder-Milch 1 plus (600 g), 1 ");
+				String goodsName = "Kinder-Milch 1 plus (600 g), 1 ";
+				if (goods != null && !goods.trim().equals("")) {
+					goodsName = parseGoodsName(goods);
+				}
+				boolean flag = checkMilk.checkAptamilMilk(url, goodsName);
 				if (!flag) {
 					writeMessageToConsle("现在没货哦,休息5分钟后重新检查");
 					try {
-						this.sleep(5*60*1000);
+						Thread.sleep(5 * 60 * 1000);
 					} catch (InterruptedException e) {
 						writeMessageToConsle(e.toString());
+						break;
 					}
 				} else {
 					writeMessageToConsle("有货了,快去抢购啊!");
@@ -71,21 +132,28 @@ class MyThread extends Thread {
 					}
 					try {
 						writeMessageToConsle("休息60分钟后重新检查");
-						this.sleep(60 * 60 * 1000);
+						Thread.sleep(60 * 60 * 1000);
 					} catch (InterruptedException e) {
 						writeMessageToConsle(e.toString());
+						break;
 					}
 				}
 			} catch (IOException e1) {
-				writeMessageToConsle("网络出错了,请查看你是否用了代理!"+e1.toString());
+				writeMessageToConsle("网络出错了,请查看你是否用了代理!" + e1.toString());
 				writeMessageToConsle("休息5分钟后重新检查");
 				try {
-					this.sleep(5*60*1000);
+					Thread.sleep(5 * 60 * 1000);
 				} catch (InterruptedException e) {
 					writeMessageToConsle(e.toString());
+					break;
 				}
 			}
 		}
+	}
+
+	private String parseGoodsName(String goods) {
+		String result = goods.replace("ü", "&uuml;");
+		return result;
 	}
 
 	public void setConsole(JTextArea jTextArea1) {
