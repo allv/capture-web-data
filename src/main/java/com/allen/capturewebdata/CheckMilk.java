@@ -68,7 +68,6 @@ public class CheckMilk {
 			int statusCode = httpclient.executeMethod(method);
 			if (statusCode == HttpStatus.SC_OK) {
 				String html = new String(method.getResponseBody());
-				System.out.println(html);
 				return Jsoup.parse(html);
 			} else {
 				throw new IOException("连接出错!");

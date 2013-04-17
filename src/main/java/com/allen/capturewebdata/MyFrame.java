@@ -346,13 +346,26 @@ public class MyFrame extends JFrame {
     }// </editor-fold>                        
 
     private void stopButtonActionPerformed(ActionEvent e) {
+    	jTextArea1.setText("");
+    	jTextArea1.append("你已经停止监控了!");
     	if(t != null ) {
     		t.interrupt();
-    		jTextArea1.setText("");
-    		jTextArea1.append("你已经停止监控了!请关闭程序......");
     		t= null;
-    		startButton.setEnabled(true);
+    		enableComponent();
     	}
+	}
+
+	private void enableComponent() {
+		startButton.setEnabled(true);
+		tfUserName.setEnabled(true);
+		jPasswordField1.setEnabled(true);
+		jComboBox1.setEnabled(true);
+		tfProxyIP.setEnabled(true);
+		tfProxyName.setEnabled(true);
+		tfProxyPass.setEnabled(true);
+		tfProxyPort.setEnabled(true);
+		tfReceipient.setEnabled(true);
+		tfGoodsName.setEnabled(true);
 	}
 
 	private void startButtonActionPerformed(ActionEvent e) {
@@ -362,8 +375,21 @@ public class MyFrame extends JFrame {
     		jTextArea1.append("用户名,密码,收件人,商品名称不能为空!");
     	}else{
     		startCheckMilk();
-    		startButton.setEnabled(false);
+    		disableComponent();
     	}
+	}
+
+	private void disableComponent() {
+		startButton.setEnabled(false);
+		tfUserName.setEnabled(false);
+		jPasswordField1.setEnabled(false);
+		jComboBox1.setEnabled(false);
+		tfProxyIP.setEnabled(false);
+		tfProxyName.setEnabled(false);
+		tfProxyPass.setEnabled(false);
+		tfProxyPort.setEnabled(false);
+		tfReceipient.setEnabled(false);
+		tfGoodsName.setEnabled(false);
 	}
 
 	private void startCheckMilk() {

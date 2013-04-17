@@ -93,12 +93,16 @@ class MyThread extends Thread {
 	public void run() {
 		CheckMilk checkMilk = new CheckMilk();
 		checkMilk.setProxyIP(proxyIP);
-		if(proxyPort != null && !proxyPort.trim().equals("")) {
+		if (proxyIP != null && !proxyIP.trim().equals("")) {
 			int port = 80;
+			if(proxyPort == null || proxyPort.trim().equals("")) {
+				proxyPort = "80";
+			}
 			try {
 				port = Integer.parseInt(proxyPort);
-			}catch(NumberFormatException e) {
-				writeMessageToConsle("端口号必须为数字!");
+			} catch (NumberFormatException e) {
+				writeMessageToConsle("端口号必须为数字,请重新输入后,开始!");
+				return ;
 			}
 			checkMilk.setProxyPort(port);
 		}
@@ -118,33 +122,34 @@ class MyThread extends Thread {
 					try {
 						Thread.sleep(5 * 60 * 1000);
 					} catch (InterruptedException e) {
-						writeMessageToConsle(e.toString());
 						break;
 					}
 				} else {
 					writeMessageToConsle("有货了,快去抢购啊!");
 					SendEmail sendEmail = new SendEmail(smtpServer, user, pwd,
 							to);
+					if (proxyIP != null && !proxyIP.trim().equals("")) {
+						sendEmail.setProxyHost(proxyIP);
+						sendEmail.setProxyPort(proxyPort);
+					}
 					try {
 						sendEmail.sendMail();
 					} catch (Exception e) {
-						writeMessageToConsle(e.toString());
+						writeMessageToConsle("发送邮件出错: " + e.toString());
 					}
 					try {
 						writeMessageToConsle("休息60分钟后重新检查");
 						Thread.sleep(60 * 60 * 1000);
 					} catch (InterruptedException e) {
-						writeMessageToConsle(e.toString());
 						break;
 					}
 				}
 			} catch (IOException e1) {
 				writeMessageToConsle("网络出错了,请查看你是否用了代理!" + e1.toString());
-				writeMessageToConsle("休息5分钟后重新检查");
+				writeMessageToConsle("请重新输入后开始!");
 				try {
 					Thread.sleep(5 * 60 * 1000);
 				} catch (InterruptedException e) {
-					writeMessageToConsle(e.toString());
 					break;
 				}
 			}

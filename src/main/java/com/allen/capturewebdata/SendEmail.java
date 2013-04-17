@@ -1,6 +1,5 @@
 package com.allen.capturewebdata;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -13,8 +12,23 @@ import javax.mail.internet.MimeMessage;
 
 public class SendEmail {
 
-	Properties prop = null;
+	private String proxyHost;
+	private String proxyPort;
+
 	private String smtpServer;
+	private String user;
+	private String pwd;
+	private String to;
+
+	public SendEmail() {
+	}
+
+	public SendEmail(String smtpServer, String user, String pwd, String to) {
+		this.smtpServer = smtpServer;
+		this.user = user;
+		this.pwd = pwd;
+		this.to = to;
+	}
 
 	public String getSmtpServer() {
 		return smtpServer;
@@ -40,10 +54,6 @@ public class SendEmail {
 		this.pwd = pwd;
 	}
 
-	private String user;
-	private String pwd;
-	private String to;
-
 	public String getTo() {
 		return to;
 	}
@@ -52,32 +62,36 @@ public class SendEmail {
 		this.to = to;
 	}
 
-	public SendEmail() {
-		loadProperties();
+	public String getProxyHost() {
+		return proxyHost;
 	}
 
-	private void loadProperties() {
-		prop = new Properties();
-		try {
-			prop.load(this.getClass().getResourceAsStream(
-					"/mailserver.properties"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void setProxyHost(String proxyHost) {
+		this.proxyHost = proxyHost;
 	}
 
-	public SendEmail(String smtpServer, String user, String pwd, String to) {
-		this.smtpServer = smtpServer;
-		this.user = user;
-		this.pwd = pwd;
-		this.to = to;
-		loadProperties();
+	public String getProxyPort() {
+		return proxyPort;
+	}
+
+	public void setProxyPort(String proxyPort) {
+		this.proxyPort = proxyPort;
 	}
 
 	/**
 	 * 创建Session对象，此时需要配置传输的协议，是否身份认证
 	 */
 	public Session createSession() {
+		Properties prop = new Properties();
+		prop.setProperty("mail.smtp.auth", "true");
+		prop.setProperty("mail.transport.protocol", "true");
+
+//		if (proxyHost != null && !proxyHost.trim().equals("")) {
+//			prop.setProperty("proxySet", "true");
+//			prop.setProperty("socksProxyHost", proxyHost);
+//			prop.setProperty("socksProxyPort", proxyHost);
+//		}
+
 		Session session = Session.getInstance(prop);
 		// 启动JavaMail调试功能，可以返回与SMTP服务器交互的命令信息
 		// 可以从控制台中看一下服务器的响应信息
